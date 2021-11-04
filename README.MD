@@ -8,15 +8,11 @@ Program configuration is done by editing supplied .config file.
 Available options:
 * UplandBaseUrl - Url to your Upland PSA. *https://ORGANISATION_NAME.tenrox.net/TEnterprise*
 * UplandApiVersion - for most api calls appended to an Url. *v2*
-* UplandUser - your username. *name@organisation.com*
-* UplandPassword - password. **Used only for development purposes. Never save password for daily use. Use command line switch instead**
 * UplandOrgName - your organization name.
 * UplandDaysBack - how many days look backwards. Integration requests will include tasks and projects where ending date is after *now - UplandDaysBack*.
-* UplandUserId - unique id for the user. 
 * UplandNoteType - note type for timesheet entries
 * ProjectsToIntegrate - unique ids of the projects to integrate. Separated by comma. E.g. *138,147*
 * ClockifyBaseUrl - Url to clockify. *https://api.clockify.me/api/v1*
-* ClockifyApiKey - Api key for clockify. **Used only for development purposes. Never save key for daily use. Use command line switch instead**
 * ClockifyWorkspace - Clockify workspace id used for integration
 
 
