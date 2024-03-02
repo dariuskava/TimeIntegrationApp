@@ -74,12 +74,17 @@ namespace TimeIntegrationApp.Services
             for (DateTime date = from; date <= to; date = date.AddDays(1.0))
             {
                 log.Info($"{date:yyyy-MM-dd}");
-                var entries = TimeReader.ReadTimeEntries(date,date);
-                log.Info($"Read {entries.Count} entries");
-                WriteStatus s = TimeWriter.WriteTimeEntries(entries);
-                log.Info($"Created {s.created} entries");
+                (bool successfulReading, var entries) = TimeReader.ReadTimeEntries(date,date, log);
+                if (successfulReading)
+                {
+                    log.Info($"Read {entries.Count} entries");
+                    WriteStatus s = TimeWriter.WriteTimeEntries(entries);
+                    log.Info($"Created {s.created} entries");
+                } else
+                {
+                    break;
+                }
             }
-
 
         }
 

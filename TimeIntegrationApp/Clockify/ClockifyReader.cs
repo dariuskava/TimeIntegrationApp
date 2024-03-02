@@ -41,7 +41,7 @@ namespace TimeIntegrationApp.Clockify
             }
         }
 
-        public List<TimeEntry> ReadTimeEntries(DateTime from, DateTime to)
+        public (bool, List<TimeEntry>) ReadTimeEntries(DateTime from, DateTime to, log4net.ILog log)
         {
             using (var client = new HttpClient())
             {
@@ -51,7 +51,22 @@ namespace TimeIntegrationApp.Clockify
 
                 response.EnsureSuccessStatusCode();
                 string result = response.Content.ReadAsStringAsync().Result;
-                List<ClockifyTimeEntry> entries = JsonConvert.DeserializeObject<List<ClockifyTimeEntry>>(result);
+                List<ClockifyTimeEntry> entries = new List<ClockifyTimeEntry>();
+                try
+                {
+                    entries = JsonConvert.DeserializeObject<List<ClockifyTimeEntry>>(result);
+                } catch (JsonSerializationException exception)
+                {
+                    if (exception.InnerException != null)
+                    {
+                        Type innerExceptionType = exception.InnerException.GetType();
+                        if (innerExceptionType == typeof(EmptyDateException))
+                        {
+                            log.Error(exception.InnerException.Message);
+                            return (false, new List<TimeEntry>());
+                        }
+                    }
+                }
                 List<TimeEntry> timeEntries = new List<TimeEntry>();
                 entries.ForEach(x =>
                 {
@@ -65,11 +80,11 @@ namespace TimeIntegrationApp.Clockify
                         TaskName = (x.Task == null) ? null : WorkItem.parseId(x.Task.Name),
                         ProjectId = (x.Project == null) ? null : Project.parseId(x.Project.Name),
                         ProjectName = (x.Project == null) ? null : Project.parseId(x.Project.Name),
-                        Start = x.TimeInterval.Start,
-                        End = x.TimeInterval.End
+                        Start = x.TimeInterval.Start ?? throw new EmptyDateException(nameof(x.TimeInterval.Start)),
+                        End = x.TimeInterval.End ?? throw new EmptyDateException(nameof(x.TimeInterval.End))
                     }); ;
                 });
-                return timeEntries;
+                return (true, timeEntries);
             }
         }
         protected string getUserId(HttpClient httpClient)
