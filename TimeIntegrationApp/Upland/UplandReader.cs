@@ -107,9 +107,9 @@ namespace TimeIntegrationApp.Upland
             };
             
         }
-        public List<TimeIntegrationApp.Models.TimeEntry> ReadTimeEntries(DateTime from, DateTime to)
+        public (bool, List<TimeIntegrationApp.Models.TimeEntry>) ReadTimeEntries(DateTime from, DateTime to, log4net.ILog log)
         {
-            return null;
+            return (false, null);
         }
 
     }

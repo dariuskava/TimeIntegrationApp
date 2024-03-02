@@ -12,6 +12,6 @@ namespace TimeIntegrationApp
         List<WorkItem> ReadWorkItems(Project p);
         List<Project> ReadProjects();
         Project ReadProject(string id);
-        List<TimeIntegrationApp.Models.TimeEntry> ReadTimeEntries(DateTime from, DateTime to);
+        (bool, List<TimeIntegrationApp.Models.TimeEntry>) ReadTimeEntries(DateTime from, DateTime to, log4net.ILog log);
     }
 }
